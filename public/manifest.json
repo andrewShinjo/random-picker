@@ -1,17 +1,16 @@
 {
+  "author": "Andrew Shinjo",
+  "name": "random-picker",
+  "description": "Open a random project note.",
+  "enableOnMobile": false,
+  "id": "andrew-shinjo-pdpio8e",
   "manifestVersion": 1,
-  "id": "plugin_template",
-  "name": "Plugin Template",
-  "author": "remnote",
-  "repoUrl": "",
   "version": {
     "major": 0,
     "minor": 0,
     "patch": 1
   },
-  "theme": [],
-  "enableOnMobile": false,
-  "description": "",
+  "repoUrl": "https://github.com/andrewShinjo/random-picker",
   "requestNative": false,
   "requiredScopes": [
     {

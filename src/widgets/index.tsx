@@ -1,45 +1,43 @@
-import { declareIndexPlugin, ReactRNPlugin, WidgetLocation } from '@remnote/plugin-sdk';
+import { declareIndexPlugin, ReactRNPlugin, Rem } from '@remnote/plugin-sdk';
 import '../style.css';
 import '../App.css';
 
 async function onActivate(plugin: ReactRNPlugin) {
-  // Register settings
-  await plugin.settings.registerStringSetting({
-    id: 'name',
-    title: 'What is your Name?',
-    defaultValue: 'Bob',
-  });
-
-  await plugin.settings.registerBooleanSetting({
-    id: 'pizza',
-    title: 'Do you like pizza?',
-    defaultValue: true,
-  });
-
-  await plugin.settings.registerNumberSetting({
-    id: 'favorite-number',
-    title: 'What is your favorite number?',
-    defaultValue: 42,
-  });
-
-  // A command that inserts text into the editor if focused.
   await plugin.app.registerCommand({
-    id: 'editor-command',
-    name: 'Editor Command',
+    id: 'pick-random-note',
+    name: 'Pick random note',
     action: async () => {
-      plugin.editor.insertPlainText('Hello World!');
-    },
-  });
 
-  // Show a toast notification to the user.
-  await plugin.app.toast("I'm a toast!");
+      // Find the Project tag
+      const richTextInterface = await plugin.richText.text("Project").value();
+      const projectTag = await plugin.rem.findByName(richTextInterface, null);
 
-  // Register a sidebar widget.
-  await plugin.app.registerWidget('sample_widget', WidgetLocation.RightSidebar, {
-    dimensions: { height: 'auto', width: '100%' },
+      if (!projectTag) {
+        console.log('No "Project" tag found');
+        return;
+      }
+
+
+      // Get all rems tagged with "Project"
+      const projectDocs = await projectTag.taggedRem();
+      const openedRems = await plugin.window.getOpenPaneRemIds();
+      const filteredProjectDocs = projectDocs.filter((projectDoc) => !openedRems.includes(projectDoc._id))
+
+      // Randomly open one of the rems and their source (if it exists)
+      if (filteredProjectDocs && filteredProjectDocs.length > 0) {
+        const randomIndex = Math.floor(Math.random() * filteredProjectDocs.length);
+        const randomProject = filteredProjectDocs[randomIndex];
+        await randomProject.openRemAsPage();
+
+        const sources = await randomProject.getSources();
+        if (sources && sources.length > 0) {
+          sources[0].openRemInContext();
+        }
+      }
+    }
   });
 }
 
-async function onDeactivate(_: ReactRNPlugin) {}
+async function onDeactivate(_: ReactRNPlugin) { }
 
 declareIndexPlugin(onActivate, onDeactivate);
