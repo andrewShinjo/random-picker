@@ -5,6 +5,7 @@
   "enableOnMobile": false,
   "id": "andrew-shinjo-pdpio8e",
   "manifestVersion": 1,
+  "unlisted": true,
   "version": {
     "major": 0,
     "minor": 0,
@@ -15,7 +16,7 @@
   "requiredScopes": [
     {
       "type": "All",
-      "level": "Read"
+      "level": "ReadCreateModifyWrite"
     }
   ]
 }
