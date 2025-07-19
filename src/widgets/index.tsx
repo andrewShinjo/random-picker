@@ -78,13 +78,20 @@ async function onActivate(plugin: ReactRNPlugin) {
         return;
       }
 
-      // Get last action type from storage
+      // Get last action info from storage
       const lastActionType: string | undefined = await plugin.storage.getSynced('lastActionType');
+      const lastRemId: string | undefined = await plugin.storage.getSynced('lastRemId');
 
-      // Filter out actions that match the last action type if it exists
-      const filteredActions = lastActionType
-        ? allWeightedActions.filter(action => action.type !== lastActionType)
-        : allWeightedActions;
+      // Filter out actions that match the last action type AND (for projects) the last rem ID
+      const filteredActions = allWeightedActions.filter(action => {
+        if (lastActionType && action.type === lastActionType) {
+          if (action.type === 'PROJECT' && lastRemId) {
+            return action.rem._id !== lastRemId;
+          }
+          return false;
+        }
+        return true;
+      });
 
       // Use filtered list if it has actions, otherwise use original list
       const candidateActions = filteredActions.length > 0 ? filteredActions : allWeightedActions;
@@ -97,8 +104,13 @@ async function onActivate(plugin: ReactRNPlugin) {
       const randomIndex = Math.floor(Math.random() * candidateActions.length);
       const selectedAction = candidateActions[randomIndex];
 
-      // Store the selected action type for next time
+      // Store the selected action info for next time
       await plugin.storage.setSynced('lastActionType', selectedAction.type);
+      if (selectedAction.type === 'PROJECT') {
+        await plugin.storage.setSynced('lastRemId', selectedAction.rem._id);
+      } else {
+        await plugin.storage.setSynced('lastRemId', null);
+      }
 
       // Execute selected action
       if (selectedAction.type === 'PROJECT') {

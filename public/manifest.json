@@ -4,19 +4,19 @@
   "description": "Open a random project note.",
   "enableOnMobile": false,
   "id": "andrew-shinjo-pdpio8e",
-  "manifestVersion": 1,
   "unlisted": true,
   "version": {
     "major": 0,
     "minor": 0,
-    "patch": 1
+    "patch": 3
   },
   "repoUrl": "https://github.com/andrewShinjo/random-picker",
   "requestNative": false,
   "requiredScopes": [
     {
       "type": "All",
-      "level": "ReadCreateModifyWrite"
+      "level": "ReadCreateModify"
     }
-  ]
+  ],
+  "manifestVersion": 1
 }
