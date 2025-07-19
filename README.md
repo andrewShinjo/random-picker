@@ -1,6 +1,6 @@
 # random-picker
 
-A private plugin to randomly open a Rem that's tagged with "Project".
+My plugin.
 
 ## Usage
 
